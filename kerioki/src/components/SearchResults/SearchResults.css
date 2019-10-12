@@ -1,0 +1,18 @@
+.search-result {
+  width: 300px;
+  margin: 5px;
+  padding: 3px;
+  border: solid 1px black;
+}
+
+.search-song-title{
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.search-lyrics-preview{
+  cursor: pointer;
+}
+.search-lyrics-preview:hover{
+  color: darkgray;
+}
