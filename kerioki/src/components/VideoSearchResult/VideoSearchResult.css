@@ -1,0 +1,41 @@
+.video-search-result-container {
+  height: auto;
+  width: auto;
+}
+
+.video-search-result-info {
+  display: flex;
+}
+
+.video-search-result-hover-modal {
+  visibility: hidden;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.video-search-result-hover-modal-visible {
+  visibility: visible;
+}
+
+.video-search-result-hover-modal-content {
+  color: white;
+  background-color: black;
+}
+
+.video-search-result-image {
+  max-width: 150px;
+  max-height: 120px;
+}
+
+.video-search-result-title {
+  font-weight: bold;
+}
+
+.video-search-result-description {
+  color:darkgray;
+  font-size: 0.7em;
+}

@@ -6,7 +6,7 @@ class SearchResults extends React.Component {
 
   render() {
     const resultsToDisplay = this.props.results.map(result => {
-      return <SearchResultSong songInfo={result} />
+      return <SearchResultSong songInfo={result} onVideoSearch={this.props.onVideoSearch}  key={result.id} />
     });
 
     return (

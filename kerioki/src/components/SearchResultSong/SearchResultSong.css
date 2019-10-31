@@ -6,3 +6,12 @@
 .search-lyrics-preview{
   cursor: pointer;
 }
+
+.song-get-lyrics-button {
+  background-color: orange;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: keep-all
+}

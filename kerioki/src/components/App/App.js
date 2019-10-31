@@ -1,12 +1,40 @@
+/*
+
+TODO
+lyrics component
+X song search results contain button that will get lyrics (does not show them initially)
+X on button click, scrapes lyrics URL for the lyrics
+- and displays truncated version while storing full version in state (state should be on app level, currently on result component)
+
+song queue component
+- on video result click, song info (artist, title, lyrics, youtube video URL) get added to queue
+- queue is saved in app state
+- event listener on video for end of song? when song is over automatically remove current song and load
+  the next song in the queue
+
+
+
+*/
+
 import React from 'react';
 import './App.css';
 import getSearchResults from '../../utils/getSearchResults';
 import SearchBar from '../SearchBar/SearchBar';
 import SearchResults from '../SearchResults/SearchResults';
+import CurrentSong from '../CurrentSong/CurrentSong';
+import VideoSearch from '../VideoSearch/VideoSearch';
+import youtube from '../../utils/youtube';
+import utaNetSearchSongs from '../../utils/utaNetSearchSongs';
 
-require('dotenv').config()
+require('dotenv').config();
 
 const searchResults = [
+  {
+    artist: 'Queen',
+    title: 'Bohemian Rhapsody',
+    lyrics: `Hey hey it is time for the Boheman Rhapsody
+    oh yeah!`
+  },
   {
     artist: 'Parquet Courts',
     title: 'Total Football',
@@ -112,22 +140,51 @@ const searchResults = [
 
 class App extends React.Component {
   state = {
-    songResults: []
+    songResults: [],
+    videoResults: []
   }
 
-  onSearchSubmit = async (searchTerm) => {
-    // Replace with scrape or API results once that is working
-    const searchResults = getSearchResults(searchTerm);
-    this.setState({ songResults: searchResults });
+  onSearchSubmit = async (searchParams) => {
+    let newSongSearchResults = [];
+    if (searchParams.language === "english") {
+      newSongSearchResults = await getSearchResults(searchParams.term);
+    } else {
+      newSongSearchResults = await utaNetSearchSongs(searchParams.term);
+    }
+
+    this.setState({
+      songResults: newSongSearchResults,
+      videoResults: []
+    });
+  }
+
+  onVideoSearch = async (searchTerm) => {
+    const response = await youtube.get('/search', {
+      params: {
+        q: searchTerm
+      }
+    })
+
+    this.setState({
+      videoResults: response.data.items
+    })
   }
 
   render() {
     return (
       <div className="App">
+        Kerioki
+        <SearchBar onSubmit={this.onSearchSubmit} />
         <div className="main-container">
-          Hello!
-          <SearchBar onSubmit={this.onSearchSubmit} />
-          <SearchResults results={this.state.songResults} />
+          <div>
+            <SearchResults results={this.state.songResults} onVideoSearch={this.onVideoSearch} />
+          </div>
+          <div>
+            <VideoSearch videos={this.state.videoResults} />
+          </div>
+          <div>
+            <CurrentSong />
+          </div>
         </div>
       </div >
     )

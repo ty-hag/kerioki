@@ -13,6 +13,9 @@
 .search-lyrics-preview{
   cursor: pointer;
 }
-.search-lyrics-preview:hover{
-  color: darkgray;
+
+.song-search-button {
+  background-color: red;
+  color: white;
+  cursor: pointer;
 }
