@@ -6,7 +6,7 @@ class VideoSearch extends React.Component{
   render(){
 
     const renderedVideoList = this.props.videos.map(video => {
-      return <VideoSearchResult key={video.id.videoId} video={video} />
+      return <VideoSearchResult key={video.id.videoId} video={video} getSongInfoToAddToQueue={this.props.getSongInfoToAddToQueue} />
     })
 
     return <div>{renderedVideoList}</div>

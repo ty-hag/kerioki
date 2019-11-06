@@ -1,3 +1,8 @@
+#search-results {
+  height: 89vh;
+  overflow: scroll;
+}
+
 .search-result {
   width: 300px;
   margin: 5px;
@@ -11,11 +16,5 @@
 }
 
 .search-lyrics-preview{
-  cursor: pointer;
-}
-
-.song-search-button {
-  background-color: red;
-  color: white;
   cursor: pointer;
 }

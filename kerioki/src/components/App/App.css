@@ -1,4 +1,9 @@
 .main-container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: auto 75%;
+}
+
+.note {
+  color:gray;
+  font-size: 0.8em;
 }

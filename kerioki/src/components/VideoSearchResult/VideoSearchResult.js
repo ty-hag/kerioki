@@ -20,6 +20,7 @@ class VideoSearchResult extends React.Component {
     //this.resultRef.current.AddEventListener('load',this.setVideoResultHoverDimensions)
   }
 
+  // this is broken :(
   setVideoResultHoverDimensions = () => {
     this.setState({
       modalHeight: this.resultRef.current.clientHeight,
@@ -39,13 +40,22 @@ class VideoSearchResult extends React.Component {
     }
   }
 
+  handleSongAdd = () => {
+    const youtubeBaseUrl = `https://www.youtube.com/watch?v=`;
+    const songUrl = youtubeBaseUrl + this.props.video.id.videoId;
+    this.props.getSongInfoToAddToQueue(songUrl);
+  }
+
   render() {
+
     return (
       <div className="video-search-result-container"
-      key = {this.props.video.id.videoId}
-      ref={this.resultRef}
-      onMouseOver={this.handleHover}
-      onMouseOut={this.handleHover}>
+        key={this.props.video.id.videoId}
+        ref={this.resultRef}
+        onMouseOver={this.handleHover}
+        onMouseOut={this.handleHover}
+        onClick={this.handleSongAdd}
+      >
         <div
           className={this.state.modalClasses}
           style={{ height: `${this.state.modalHeight}px`, width: `${this.state.modalWidth}px` }}
