@@ -1,22 +1,12 @@
-const rp = require('request-promise');
-const $ = require('cheerio');
-//const fetch = require('node-fetch');
+import getLyrics from './getLyrics';
 
 // config
 require('dotenv').config();
 const geniusApiKey = process.env.REACT_APP_GENIUS_API_KEY;
-console.log("geniusApiKey process.env");
-console.log(process.env);
 const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
 
-const getGeniusLyrics = (url) => {
-  // TODO scrape URL for lyrics
-  // TODO make this return promise
-  return 'HEY HEY whats goin on yall';
-}
-
 // use genius api to search for a song
-const getSearchResults = async (searchTerm) => {
+const getSearchResults = async (searchTerm, resultsLimit) => {
   return new Promise(async (resolve, reject) => {
 
     const song = encodeURIComponent(searchTerm);
@@ -39,20 +29,26 @@ const getSearchResults = async (searchTerm) => {
       // TODO: Return 10 results
       const result = [];
 
-      for (let i = 0; i < searchResultsArray.length; i++) {
+      // limit results
+      let numberSongsToReturn = searchResultsArray.length < resultsLimit ? searchResultsArray.length : resultsLimit;
+
+      for (let i = 0; i < numberSongsToReturn; i++) {
         const songInfo = {};
         songInfo.artist = searchResultsArray[i].result.primary_artist.name;
         songInfo.title = searchResultsArray[i].result.title_with_featured;
-        // going to leave lyrics as an empty string, they can be scraped later via separate component
-        songInfo.lyrics = '';
+        songInfo.lyrics = await getLyrics(searchResultsArray[i].result.url);
         songInfo.lyricsUrl = searchResultsArray[i].result.url;
+        songInfo.language = 'english';
+        // using url as an ID as it should be a unique identifier
+        songInfo.id = searchResultsArray[i].result.url;
+
         result.push(songInfo);
       }
 
       resolve(result);
 
     } catch (error) {
-      console.log(error);
+      reject(error);
     }
   })
 }

@@ -3,7 +3,8 @@ import React from 'react';
 class SearchBar extends React.Component {
   state = {
     term: '',
-    language: 'english'
+    language: 'english',
+    resultLimit: 3
   }
 
   onFormSubmit = e => {
@@ -27,8 +28,19 @@ class SearchBar extends React.Component {
             value={this.state.term}
             onChange={(event) => { this.setState({ term: event.target.value }) }}
           />
+          <span>Choose number of results. Less results load faster.</span>
+          <input
+            type="number"
+            name="quantity"
+            value={this.state.resultLimit}
+            onChange={event => {
+              console.log(event.target.value > 0);
+              this.setState({ resultLimit: event.target.value })
+            }}>
+          </input>
+          <button type="submit">Submit</button>
         </form>
-      </div>
+      </div >
     )
   }
 }

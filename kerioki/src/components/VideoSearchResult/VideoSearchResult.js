@@ -40,10 +40,12 @@ class VideoSearchResult extends React.Component {
     }
   }
 
-  handleSongAdd = () => {
+  handleSongAdd = (toFrontOfQueue) => {
+    // toFrontOfQueue is a boolean that indicates whether song should go to front of queue or end
+    // Determined by which button on videoSearchResult is clicked
     const youtubeBaseUrl = `https://www.youtube.com/watch?v=`;
     const songUrl = youtubeBaseUrl + this.props.video.id.videoId;
-    this.props.getSongInfoToAddToQueue(songUrl);
+    this.props.getSongInfoToAddToQueue(songUrl, toFrontOfQueue);
   }
 
   render() {
@@ -54,13 +56,13 @@ class VideoSearchResult extends React.Component {
         ref={this.resultRef}
         onMouseOver={this.handleHover}
         onMouseOut={this.handleHover}
-        onClick={this.handleSongAdd}
       >
         <div
           className={this.state.modalClasses}
           style={{ height: `${this.state.modalHeight}px`, width: `${this.state.modalWidth}px` }}
         >
-          <div className="video-search-result-hover-modal-content">Queue this song!</div>
+          <div className="video-search-result-hover-modal-content" onClick={() => {this.handleSongAdd(false)}}>Queue this song!</div>
+          <div className="video-search-result-hover-modal-content" onClick={() => {this.handleSongAdd(true)}}>Add to front of queue!</div>
         </div>
         <div className="video-search-result-info">
           <img alt={this.props.video.snippet.title} className="video-search-result-image" src={this.props.video.snippet.thumbnails.medium.url} />

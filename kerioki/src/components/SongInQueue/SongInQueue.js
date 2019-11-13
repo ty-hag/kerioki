@@ -1,10 +1,11 @@
 import React from 'react';
+import './SongInQueue.css';
 
 class SongInQueue extends React.Component {
   render() {
 
     return (
-      <div>{this.props.numberInQueue}. {this.props.songInfo.title}</div>
+      <span className="queued-song">{this.props.numberInQueue}. {this.props.songInfo.title}</span>
     )
   }
 }

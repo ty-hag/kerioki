@@ -12,9 +12,9 @@
   position: absolute;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
 }
 
 .video-search-result-hover-modal-visible {
@@ -22,8 +22,10 @@
 }
 
 .video-search-result-hover-modal-content {
+  margin: 3px;
   color: white;
   background-color: black;
+  cursor: pointer;
 }
 
 .video-search-result-image {

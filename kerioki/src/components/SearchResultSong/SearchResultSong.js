@@ -1,10 +1,8 @@
 import React from 'react';
 // putting CSS here didn't work, but putting it in parent element did - why?
 import './SearchResultSong.css';
-import getLyrics from '../../utils/getLyrics';
 import VideoSearch from '../VideoSearch/VideoSearch';
 import youtube from '../../utils/youtube';
-import VideoSearchResult from '../VideoSearchResult/VideoSearchResult';
 //import getLyrics from '../../utils/utaNetSearchSongs';
 
 class SearchResultSong extends React.Component {
@@ -45,10 +43,10 @@ class SearchResultSong extends React.Component {
   }
 
 
-  getSongInfoToAddToQueue = (youtubeUrl) => {
+  getSongInfoToAddToQueue = (youtubeUrl, toFrontOfQueue) => {
     const songInfoToAdd = this.props.songInfo;
     songInfoToAdd.youtubeUrl = youtubeUrl;
-    this.props.handleSongAdd(songInfoToAdd);
+    this.props.handleSongAdd(songInfoToAdd, toFrontOfQueue);
   }
 
   render() {
