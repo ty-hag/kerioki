@@ -5,7 +5,7 @@ class SongQueue extends React.Component {
   render() {
 
     const songsToRender = this.props.queuedSongs.map((song, index) => {
-      return <SongInQueue songInfo={song} key={song.youtubeUrl} numberInQueue={index + 1} />
+      return <SongInQueue songInfo={song} key={song.id} numberInQueue={index + 1} />
     })
 
     return (

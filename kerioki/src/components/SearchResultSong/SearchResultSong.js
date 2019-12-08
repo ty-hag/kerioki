@@ -5,6 +5,21 @@ import VideoSearch from '../VideoSearch/VideoSearch';
 import youtube from '../../utils/youtube';
 //import getLyrics from '../../utils/utaNetSearchSongs';
 
+const fakeVideoResultForTesting = {
+  id: {
+    videoId: 'w4toh34toih'
+  },
+  snippet: {
+    title: "Title",
+    thumbnails: {
+      medium: {
+        url: "https://vignette.wikia.nocookie.net/pokemon/images/3/31/050Diglett.png"
+      }
+    },
+    description: "Cool video!"
+  }
+}
+
 class SearchResultSong extends React.Component {
 
   state = {
@@ -15,7 +30,6 @@ class SearchResultSong extends React.Component {
 
   // At this point, showing
   handleLyricsClick = () => {
-    console.log('handle lyrics click')
     // This toggles between a preview version of the lyrics and the full lyrics
     if (this.state.lyricsCollapsed) {
       this.setState({
@@ -43,14 +57,15 @@ class SearchResultSong extends React.Component {
   }
 
 
-  getSongInfoToAddToQueue = (youtubeUrl, toFrontOfQueue) => {
+  getSongInfoToAddToQueue = (youtubeUrl, id, toFrontOfQueue) => {
     const songInfoToAdd = this.props.songInfo;
     songInfoToAdd.youtubeUrl = youtubeUrl;
+    songInfoToAdd.id = id;
     this.props.handleSongAdd(songInfoToAdd, toFrontOfQueue);
   }
 
   render() {
-    console.log('SearchResultSong render called');
+    // console.log('rendering SearchResultSong');
 
     let lyricsToRender = this.state.lyricsCollapsed === false ? this.props.songInfo.lyrics : this.props.songInfo.language === 'english' ? this.props.songInfo.lyrics.slice(0, 100) : this.props.songInfo.lyrics.slice(0, 30);
 
@@ -72,3 +87,5 @@ class SearchResultSong extends React.Component {
 
 
 export default SearchResultSong;
+
+

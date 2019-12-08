@@ -61,6 +61,7 @@ const getSongs = async (searchTerm, resultLimiter) => {
 
       })
       .catch(function (err) {
+        console.log('in utaNetSearchSongs catch')
         //handle error
         reject(err);
       });

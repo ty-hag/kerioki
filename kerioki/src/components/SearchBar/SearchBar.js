@@ -14,6 +14,7 @@ class SearchBar extends React.Component {
   }
 
   render() {
+    // console.log('rendering SearchBar');
     return (
       <div className='searchbar'>
         <div>
@@ -40,6 +41,7 @@ class SearchBar extends React.Component {
           </input>
           <button type="submit">Submit</button>
         </form>
+        <div>{this.props.searchStatusMessage}</div>
       </div >
     )
   }

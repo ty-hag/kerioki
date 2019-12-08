@@ -1,19 +1,45 @@
 /*
 
 TODO
-Song queue stuff
-O On Song add, song gets added to currentSong if none exists, otherwise add to queue
-- Give option to add to front of queue
-- Next song button removes current currentSong, replaces it with the song at index 0 in songQueue and removes that song from the queue
+This is all fixed by resetting the search results on queue add, but I don't fully understand how it was broken :(
+  BUG: video search results disappear when clicked
+    - It is being re-rendered with the default state setting on SearchResultSong
+    - How do I prevent this from rendering on click? Why does this happen in the first place?
+      T - I'm guessing it's because SearchResults are getting re-rendered. Why is that? Its state is not changing.
+      C - Check to make sure handleSongAdd doesn't somehow change state passed to SearchResultSong
+    ? - What is actually happening? Why don't lyrics get erased too?
+      A - Lyrics come from App.js' state (specifically objects in searchResults). The lyrics are getting re-rendered with the same values since those values come from props (they are never instantiated as empties like the video results).
+      A - When a song is queued, searchResults's render is called twice. The first time the current props and nextProps match, so it doesn't render. For some reason, it is called again, and when that happens the nextProps are "undefined". As a result the props don't match and everything gets rendered.
+      ? - Does something in App.js call setState again after the queueing function?
+        A - Doesn't look that way
+      ? - What triggers the second render and why are the props undefined?
+        - Look into chrome debugger
+        - (Wrote this and decided I need to double-check)Not sure that it's a second render, but that the child components are just rendering even if the parents are not. It is rendering the video search results again  with an empty string?
+        - Going to let this slide for now since it's not broken, it's just not my preferred functionality
+  BUG: If you queue a video, then queue a different video from the same song search it appears to add the video to currentSong and queue the same one
+  - currentSong is being updated with video, it should recognize that there is a video in the queue already?
 
-Limit search results
-- Give option to limit number of search results
+Replaced with static buttons
+  Fix hover buttons for queueing songs
+  - Remove hover modal
+  - Add buttons
+  - Switch event listeners to buttons
 
 Handling a lack of search results
-- No results from song search displays message
+^ No results from song search displays message
 - No results for video search displays message
-- Option to input lyrics manually
-- Option to input song URL manually
+
+FEATURES:
+Lyrics scrolling (cycle through lines with up/down arrows, current line displays big, previous line and next 3 lines display small)
+  G - Lyrics must be processed into an array of strings, each string being a new line
+    G - Console.log the chopped lyrics to confirm it's working
+  W - Highlighted line determined by an index, which is a state on currentSongLyrics?
+    W - create index state on currentSongLyrics
+    W - Have lyrics display based on state (slice array and map over new array for display)
+
+Ability to copy+paste lyrics
+
+Ability to copy+paste youtube link
 
 
 */
@@ -32,53 +58,70 @@ require('dotenv').config();
 class App extends React.Component {
   state = {
     songResults: [],
-    videoResults: [],
+    searchStatusMessage: 'default',
     songQueue: [],
     currentSong: {}
   }
 
+  componentDidMount = () => {
+    console.log('componentDidMount on App.js');
+    window.addEventListener("gamepadconnected", function (e) {
+      console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+        e.gamepad.index, e.gamepad.id,
+        e.gamepad.buttons.length, e.gamepad.axes.length);
+    });
+  }
+
   onSearchSubmit = async (searchParams) => {
+    // Handle initial search for songs/lyrics
+    this.setState({
+      searchStatusMessage: 'Searching...'
+    });
+
     let newSongSearchResults = [];
+    let updatedSearchStatusMessage = '';
     if (searchParams.language === "english") {
       newSongSearchResults = await geniusSearchSongs(searchParams.term, searchParams.resultLimit);
     } else {
-      newSongSearchResults = await utaNetSearchSongs(searchParams.term, searchParams.resultLimit);
+      try {
+        newSongSearchResults = await utaNetSearchSongs(searchParams.term, searchParams.resultLimit);
+      } catch (error) {
+        console.log('utanet search failed');
+        updatedSearchStatusMessage = `Your search was bad`;
+      }
     }
 
     this.setState({
+      searchStatusMessage: updatedSearchStatusMessage,
       songResults: newSongSearchResults,
-      videoResults: []
     });
   }
 
   handleSongAdd = (songToAdd, toFrontOfQueue) => {
-    console.log('toFrontOfQueue');
-    console.log(toFrontOfQueue);
     // handle case where there is no current song
     if (Object.entries(this.state.currentSong).length === 0 && this.state.currentSong.constructor === Object) {
-      console.log('song being sent to current song')
+      console.log('adding to current song')
       this.setState({
-        currentSong: songToAdd
+        currentSong: songToAdd,
+        songResults: []
       })
     } else {  // handle case where there is a current song
       if (toFrontOfQueue) { // handle song being added to front of queue
-        console.log('song being added to front of queue');
-        console.log()
+        console.log('adding to front of queue');
         const updatedQueue = [songToAdd].concat(this.state.songQueue);
-        console.log(updatedQueue)
         this.setState({
-          songQueue: updatedQueue
+          songQueue: updatedQueue,
+          songResults: []
         });
       } else {
-        console.log('song being added to end of queue');
+        console.log('adding to end of queue');
         const updatedQueue = this.state.songQueue.concat(songToAdd);
-        console.log(updatedQueue)
         this.setState({
-          songQueue: updatedQueue
+          songQueue: updatedQueue,
+          songResults: []
         });
       }
     }
-    console.log(this.state.songQueue);
   }
 
   finishCurrentSong = () => {
@@ -114,19 +157,18 @@ class App extends React.Component {
     return (
       <div className="App">
         Kerioki
-        <SearchBar onSubmit={this.onSearchSubmit} />
+        <SearchBar onSubmit={this.onSearchSubmit} searchStatusMessage={this.state.searchStatusMessage} />
         <div className="main-container">
           <div>
             <SearchResults
               results={this.state.songResults}
               onVideoSearch={this.onVideoSearch}
               handleSongAdd={this.handleSongAdd}
-              videoResults={this.state.videoResults}
             />
           </div>
           <div>
-            <CurrentSong currentSong={this.state.currentSong} finishCurrentSong={this.finishCurrentSong} />
             <SongQueue queuedSongs={this.state.songQueue} />
+            <CurrentSong currentSong={this.state.currentSong} finishCurrentSong={this.finishCurrentSong} />
           </div>
         </div>
       </div >
@@ -135,115 +177,3 @@ class App extends React.Component {
 }
 
 export default App;
-
-
-
-// const searchResults = [
-//   {
-//     artist: 'Queen',
-//     title: 'Bohemian Rhapsody',
-//     lyrics: `Hey hey it is time for the Boheman Rhapsody
-//     oh yeah!`
-//   },
-//   {
-//     artist: 'Parquet Courts',
-//     title: 'Total Football',
-//     lyrics: `[Verse 1]
-//     We are conductors of sound, heat and energy
-//     And I bet that you thought you had us figured out from the start
-//     We are conduits of clear electricity
-//     Now you’re back on the pitch to take the apparatus apart
-
-//     [Pre-Chorus 1]
-//     You’re an ancient now
-//     You're an ancient now
-//     You're an ancient now
-//     On your own
-
-//     [Chorus 1]
-//     Rebels, teachers
-//     Strikers, sweepers
-//     Better protected
-//     Whenever collected
-
-//     [Verse 2]
-//     We are troubled by your soft curiosity
-//     But delighted to be anti everything you were taught
-//     Are you put off by our footloose fluidity?
-//     Have your hurt caucasian feelings left you so distraught?
-
-//     [Pre-Chorus 2]
-//     Are you quite done now?
-//     Are you quite done now?
-//     Are you quite done now?
-//     Not at all
-
-//     [Chorus 2]
-//     Workers, authors
-//     Poets, stoppers
-//     Power resembled
-//     If we are assembled
-
-//     [Verse 3]
-//     Only through those who stay awake can an institution be dismantled
-//     It is dishonest, nay, a sin to stand for any anthem that attempts to drown out the roar of oppression
-
-//     [Bridge]
-//     Hesse Total Football
-//     Twombly Total Football
-//     Tzara Total Football
-//     Mina Total Football
-//     Panthers Total Football
-//     KoBrA Total Football
-//     Dada Total Football
-//     Beatles Total Football
-
-//     [Outro]
-//     Swapping parts and roles is not acting but rather emancipation from expectation
-//     Collectivism and autonomy are not mutually exclusive
-//     Those who find discomfort in your goals of liberation will be issued no apology
-//     And fuck Tom Brady!`
-//   },
-//   {
-//     artist: 'IDLES',
-//     title: 'GREAT',
-//     lyrics: `[Verse 1]
-//     (listen to more Jungle)
-//     Blighty wants his country back
-//     Fifty-inch screen in his cul-de-sac
-//     Wombic charm of the Union Jack
-//     As he cries at the price of a bacon bap
-
-//     [Pre-Chorus]
-//     Islam didn’t eat your hamster
-//     Change isn’t a crime
-//     So won't you take my hand sir
-//     And sing with me in time
-
-//     [Chorus]
-//     G R E A T
-//     G R E A T
-
-//     [Verse 2]
-//     Blighty wants her blue passport
-//     Not quite sure what the union’s for
-//     Burning bridges and closing doors
-//     Not sure what she sees on the seashore
-
-//     [Pre-Chorus]
-//     Islam didn’t eat your hamster
-//     Change isn’t a crime
-//     So won't you take my hand sister
-//     And sing with me in time
-
-//     [Chorus]
-//     G R E A T
-//     G R E A T
-
-//     [Outro]
-//     You can have it all, I don’t mind
-//     Just get ready to work overtime
-
-//     ‘Cause we’re all in this together`
-//   }
-// ]

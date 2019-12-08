@@ -20,6 +20,7 @@ const getLyrics = async (url) => {
               lyrics += line.data + '\n';
             }
           })
+          console.log(lyrics);
           resolve(lyrics);
         })
         .catch(function (err) {

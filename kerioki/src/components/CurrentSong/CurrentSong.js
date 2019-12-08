@@ -1,10 +1,11 @@
 import React from 'react';
 import './CurrentSong.css';
+import CurrentSongLyrics from '../currentSongLyrics/currentSongLyrics';
 
 class CurrentSong extends React.Component {
 
   render() {
-    console.log(this.props.currentSong);
+
     const currentSong = this.props.currentSong;
     if (Object.entries(currentSong).length === 0 && currentSong.constructor === Object) {
       return <div> Please add a song! </div>
@@ -16,9 +17,10 @@ class CurrentSong extends React.Component {
             {currentSong.title} - {currentSong.artist}
           </div>
           <div>
-            <pre>
-              {currentSong.lyrics}
-            </pre>
+            <iframe src={`https://www.youtube.com/embed/${currentSong.id}`} />
+          </div>
+          <div>
+            <CurrentSongLyrics lyrics={this.props.currentSong.lyrics} />
           </div>
         </div>
       )
