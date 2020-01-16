@@ -29,7 +29,7 @@ const getSongs = async (searchTerm, resultLimiter) => {
 
         // setting a limit for results here, some results take too long to load
         // Also, in testing results there are always 3 additional table rows, so I subtracted 3 from length
-        let limitResultsTo = scrapedResultsArray.length > 8 ? 5 : scrapedResultsArray.length - 3;
+        let limitResultsTo = scrapedResultsArray.length - 3 > resultLimiter ? resultLimiter : scrapedResultsArray.length - 3;
 
         
         for (let i = 0; i < limitResultsTo; i++) {

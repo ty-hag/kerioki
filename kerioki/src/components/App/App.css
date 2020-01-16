@@ -1,3 +1,20 @@
+.App {
+
+}
+
+.title-bar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.controller-found{
+  background-color: chartreuse;
+}
+
+.controller-missing {
+  background-color: crimson;
+}
+
 .main-container {
   display: grid;
   grid-template-columns: auto 75%;

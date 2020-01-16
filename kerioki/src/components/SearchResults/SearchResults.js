@@ -4,13 +4,6 @@ import SearchResultSong from '../SearchResultSong/SearchResultSong';
 
 class SearchResults extends React.Component {
 
-  shouldComponentUpdate (nextProps) {
-    console.log('shouldComponentUpdate called on SearchResults');
-    console.log(nextProps);
-    console.log(this.props);
-    return nextProps != this.props;
- }
-
   render() {
     //this.shouldComponentUpdate()
     console.log('rendering SearchResults');

@@ -5,27 +5,13 @@ import VideoSearch from '../VideoSearch/VideoSearch';
 import youtube from '../../utils/youtube';
 //import getLyrics from '../../utils/utaNetSearchSongs';
 
-const fakeVideoResultForTesting = {
-  id: {
-    videoId: 'w4toh34toih'
-  },
-  snippet: {
-    title: "Title",
-    thumbnails: {
-      medium: {
-        url: "https://vignette.wikia.nocookie.net/pokemon/images/3/31/050Diglett.png"
-      }
-    },
-    description: "Cool video!"
-  }
-}
-
 class SearchResultSong extends React.Component {
 
   state = {
     lyrics: this.props.songInfo.language === 'english' ? this.props.songInfo.lyrics.slice(0, 100) : this.props.songInfo.lyrics.slice(0, 30),
     lyricsCollapsed: true,
-    videoResults: []
+    videoResults: [],
+    manualInputUrl: ''
   };
 
   // At this point, showing
@@ -64,6 +50,22 @@ class SearchResultSong extends React.Component {
     this.props.handleSongAdd(songInfoToAdd, toFrontOfQueue);
   }
 
+  handleManualVideoInput = (toFrontOfQueue) => {
+    // validate URL
+    const youtubeRegex = /https:\/\/www\.youtube\.com\/watch\?v=[0-9A-z]{11}$/;
+    const inputIsValidYoutubeUrl = youtubeRegex.test(this.state.manualInputUrl);
+
+    if(inputIsValidYoutubeUrl){
+      const songInfoToAdd = this.props.songInfo;
+      songInfoToAdd.youtubeUrl = this.state.manualInputUrl;
+      songInfoToAdd.id = this.state.manualInputUrl.slice(-11);
+      this.props.handleSongAdd(songInfoToAdd, toFrontOfQueue);
+    } else {
+      console.log('invalid youtube video URL')
+    }
+
+  }
+
   render() {
     // console.log('rendering SearchResultSong');
 
@@ -76,6 +78,16 @@ class SearchResultSong extends React.Component {
         </div>
         <div>
           <span className="video-search-button" onClick={this.handleVideoSearchClick}>Search for this song's videos</span>
+        </div>
+        <div>
+          <div>Copy+paste youtube URL here for manual selection</div>
+          <input
+            className="manual-video-input"
+            type="text"
+            onChange={event => { this.setState({ manualInputUrl: event.target.value }) }}
+          >
+          </input>
+          <span onClick={() => {this.handleManualVideoInput(false)}}>Queue with this video</span>
         </div>
         <div className="note">Click on lyrics to show/hide full lyrics</div>
         <pre className="search-lyrics-preview" onClick={this.handleLyricsClick} >{lyricsToRender}</pre>
