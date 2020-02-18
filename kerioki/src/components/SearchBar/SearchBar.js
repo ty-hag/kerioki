@@ -29,7 +29,7 @@ class SearchBar extends React.Component {
             value={this.state.term}
             onChange={(event) => { this.setState({ term: event.target.value }) }}
           />
-          <span>Choose number of results. Less results load faster.</span>
+          <span>Choose number of results. <span className="note">Less results load faster. </span></span>
           <input
             type="number"
             name="quantity"
@@ -39,9 +39,9 @@ class SearchBar extends React.Component {
               this.setState({ resultLimit: event.target.value })
             }}>
           </input>
-          <button type="submit">Submit</button>
+          <button className="button" type="submit">Submit</button>
+          <span> {this.props.searchStatusMessage}</span>
         </form>
-        <div>{this.props.searchStatusMessage}</div>
       </div >
     )
   }

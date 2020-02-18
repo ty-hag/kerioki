@@ -8,7 +8,7 @@ class CurrentSongLyrics extends React.Component {
     this.state = {
       index: 0,
       intervalId: 0,
-      lyricsArrayLength: this.props.lyrics.split('\n').filter(line => {return !(line.startsWith('[') || line === '');}).length
+      lyricsArrayLength: this.props.lyrics.split('\n').filter(line => { return !(line.startsWith('[') || line === ''); }).length
     }
 
     this.LOOP_REFRESH_RATE = 50;
@@ -46,7 +46,7 @@ class CurrentSongLyrics extends React.Component {
       if (!aIsPressed && !bIsPressed || this.counterForReadDelayAfterButtonPress >= this.INPUT_CHECK_DELAY_LIMIT) {
         // reset delay after user releases button or delay timer hits its limit
         this.counterForReadDelayAfterButtonPress = 0;
-      } else if (this.counterForReadDelayAfterButtonPress === 0 && aIsPressed && this.state.index < this.state.lyricsArrayLength -1) {
+      } else if (this.counterForReadDelayAfterButtonPress === 0 && aIsPressed && this.state.index < this.state.lyricsArrayLength - 1) {
         // user has pressed button and there is no active delay
         this.setState({ index: this.state.index + 1 })
         this.counterForReadDelayAfterButtonPress++;
@@ -76,11 +76,6 @@ class CurrentSongLyrics extends React.Component {
     document.removeEventListener("keydown", this.handleKeyPress, false);
     clearInterval(this.state.intervalId);
   }
-
-  componentWillReceiveProps() {
-    console.log('currentSongLyrics - componentWillReceiveProps called');
-  }
-
 
   render() {
     const lyricsArray = this.props.lyrics.split('\n').filter(line => {
@@ -121,7 +116,7 @@ class CurrentSongLyrics extends React.Component {
 
 
     return (
-      <div>
+      <div> 
         {lyricsToRender}
       </div >
     )

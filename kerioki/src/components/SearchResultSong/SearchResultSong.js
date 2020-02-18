@@ -55,7 +55,7 @@ class SearchResultSong extends React.Component {
     const youtubeRegex = /https:\/\/www\.youtube\.com\/watch\?v=[0-9A-z]{11}$/;
     const inputIsValidYoutubeUrl = youtubeRegex.test(this.state.manualInputUrl);
 
-    if(inputIsValidYoutubeUrl){
+    if (inputIsValidYoutubeUrl) {
       const songInfoToAdd = this.props.songInfo;
       songInfoToAdd.youtubeUrl = this.state.manualInputUrl;
       songInfoToAdd.id = this.state.manualInputUrl.slice(-11);
@@ -76,18 +76,18 @@ class SearchResultSong extends React.Component {
         <div className="search-song-title">
           {this.props.songInfo.title} - {this.props.songInfo.artist}
         </div>
-        <div>
-          <span className="video-search-button" onClick={this.handleVideoSearchClick}>Search for this song's videos</span>
+        <div className="button red-button" onClick={this.handleVideoSearchClick}>
+          Search for this song's videos
         </div>
         <div>
-          <div>Copy+paste youtube URL here for manual selection</div>
+          <div className="note">Or paste youtube URL here for manual selection</div>
           <input
             className="manual-video-input"
             type="text"
             onChange={event => { this.setState({ manualInputUrl: event.target.value }) }}
           >
           </input>
-          <span onClick={() => {this.handleManualVideoInput(false)}}>Queue with this video</span>
+          <span className='button red-button' onClick={() => { this.handleManualVideoInput(false) }}>Add</span>
         </div>
         <div className="note">Click on lyrics to show/hide full lyrics</div>
         <pre className="search-lyrics-preview" onClick={this.handleLyricsClick} >{lyricsToRender}</pre>

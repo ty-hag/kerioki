@@ -1,26 +1,73 @@
-.App {
-
+body {
+  background-color: black;
 }
 
-.title-bar {
-  display: flex;
-  justify-content: space-between;
+.App {
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+}
+
+.big-text {
+  font-size: 25pt;
+}
+
+.button {
+  display: inline-block;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 3px;
+  background-color: lightskyblue;
+  cursor: pointer;
+  border: none;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
 }
 
 .controller-found{
+  display: inline-block;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 3px;
   background-color: chartreuse;
 }
 
 .controller-missing {
+  display: inline-block;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 3px;
   background-color: crimson;
+}
+
+input[type=number] {
+  border: none;
+  width: 34px;
+  border-radius: 3px;
+  padding: 3px;
+}
+
+input[type=text] {
+  border: none;
+  border-radius: 3px;
+  padding: 3px;
 }
 
 .main-container {
   display: grid;
-  grid-template-columns: auto 75%;
+  grid-template-columns: 340px auto;
 }
 
 .note {
   color:gray;
   font-size: 0.8em;
+}
+
+pre {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.title-bar {
+  display: flex;
+  justify-content: space-between;
 }

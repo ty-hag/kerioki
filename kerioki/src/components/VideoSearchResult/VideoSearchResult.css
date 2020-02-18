@@ -1,9 +1,21 @@
+.video-search-result-buttons {
+  text-align: center;
+}
+
 .video-search-result-container {
   margin: 5px;
+  padding: 5px;
+  background-color: rgb(29, 29, 29);
+  border-radius: 5px;
 }
 
 .video-search-result-info {
   display: flex;
+}
+
+.video-search-result-content {
+  width: auto;
+  margin-left: 5px;
 }
 
 .video-search-result-hover-modal {
@@ -39,11 +51,5 @@
 .video-search-result-description {
   color:darkgray;
   font-size: 0.7em;
-}
-
-.video-search-result-buttons span{
-  background-color: orange;
-  cursor: pointer;
-  margin: 3px;
-  padding: 3px;
+  word-break: break-all;
 }

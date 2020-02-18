@@ -20,7 +20,7 @@ class CurrentSong extends React.Component {
             <iframe src={`https://www.youtube.com/embed/${currentSong.id}`} />
           </div>
           <div>
-            <CurrentSongLyrics lyrics={this.props.currentSong.lyrics} controllerConnectedIndex={this.props.controllerConnectedIndex} />
+            <CurrentSongLyrics key={currentSong.id} lyrics={this.props.currentSong.lyrics} controllerConnectedIndex={this.props.controllerConnectedIndex} />
           </div>
         </div>
       )

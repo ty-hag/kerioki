@@ -73,8 +73,8 @@ class VideoSearchResult extends React.Component {
           </div>
         </div>
         <div className="video-search-result-buttons">
-          <span onClick={() => { this.handleSongAdd(false) }}>Queue this song!</span>
-          <span onClick={() => { this.handleSongAdd(true) }}>Add to front of queue!</span>
+          <span className="button" onClick={() => { this.handleSongAdd(false) }}>+</span>
+          <span className="button" onClick={() => { this.handleSongAdd(true) }}>Add to front</span>
         </div>
       </div>
     )

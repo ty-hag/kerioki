@@ -43,7 +43,7 @@ Lyrics scrolling (cycle through lines with up/down arrows, current line displays
     G - create index state on currentSongLyrics
     G - Have lyrics display based on state (slice array and map over new array for display)
   - Index resets to 0 when a new song loads
-  - Prevent scrolling into negative index
+  G Prevent scrolling into negative index
 
 Controller as remote scroller
   - Check for valid controller
@@ -71,7 +71,7 @@ require('dotenv').config();
 class App extends React.Component {
   state = {
     songResults: [],
-    searchStatusMessage: 'default',
+    searchStatusMessage: '',
     songQueue: [],
     currentSong: {},
     controllerConnectedIndex: -1
@@ -194,10 +194,10 @@ class App extends React.Component {
     return (
       <div className="App">
         <div className="title-bar">
-          <div>Kerioki</div>
+          <div className="big-text">Kerioki</div>
           <div>
-            <span onClick={this.checkForController}>Check for controller</span>
-            <span className={this.state.controllerConnectedIndex === 0 || this.state.controllerConnectedIndex === 1 ? 'controller-found' : 'controller-missing'}>Controller</span>
+            <span className="button" onClick={this.checkForController}>Check for controller</span>
+            <span className={this.state.controllerConnectedIndex === 0 || this.state.controllerConnectedIndex === 1 ? 'controller-found' : 'controller-missing'}>Status</span>
           </div>
         </div>
         <SearchBar onSubmit={this.onSearchSubmit} searchStatusMessage={this.state.searchStatusMessage} />
