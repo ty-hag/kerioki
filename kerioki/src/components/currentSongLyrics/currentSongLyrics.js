@@ -31,24 +31,22 @@ class CurrentSongLyrics extends React.Component {
 
   gamepadInputCheckLoop = () => {
     // handles lyric scrolling via gamepad
-    console.log('initiating gamepad check loop')
     let checkInputInterval = setInterval(() => {
 
       // Handle controller disconnect
       if (!navigator.getGamepads()[this.props.controllerConnectedIndex]) {
-        console.log('gamepad disconnected');
-        console.log(this.state.intervalId);
 
         // Is it a problem to clearInterval inside of setInterval? There is no interval ID created yet?
         // This should only be reachable if there an interval ID (other than default of 0) exists,
         // So I reckon it's safe
         clearInterval(checkInputInterval);
         this.props.handleControllerDisconnect();
+        this.setState({
+          intervalId: 0
+        });
       } else {
         const aIsPressed = navigator.getGamepads()[this.props.controllerConnectedIndex].buttons[0].pressed;
         const bIsPressed = navigator.getGamepads()[this.props.controllerConnectedIndex].buttons[1].pressed;
-
-        console.log(navigator.getGamepads()[this.props.controllerConnectedIndex].buttons[0].pressed)
 
         if (!aIsPressed && !bIsPressed || this.counterForReadDelayAfterButtonPress >= this.INPUT_CHECK_DELAY_LIMIT) {
           // reset delay after user releases button or delay timer hits its limit
@@ -72,17 +70,10 @@ class CurrentSongLyrics extends React.Component {
 
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyPress, false);
-    console.log('currentSongLyrics - componentDidMount called')
     if (this.props.controllerConnectedIndex >= 0) {
       this.gamepadInputCheckLoop();
     }
   }
-
-  // WORKING ON:
-  // Need to make app pick up controller input after disconnect
-  // Seems comoponentDidMount is not called when you reconnect the controller after disconnect while song is loaded
-
-
 
   componentWillUnmount() {
     document.removeEventListener("keydown", this.handleKeyPress, false);

@@ -2,16 +2,16 @@
 
 TODO
 
-Styling on search panel scrollbar
+WIP - Styling on search panel scrollbar
 
 DONE - Button to close search results
 
-IN PROGRESS - Start controller input check loop when controller is added
- - Works on initial add, but if you disconnect controller and reconnect it while lyrics are loaded it doesn't start the loop
+DONE - Start controller input check loop when controller is added
+ DONE - Works on initial add, but if you disconnect controller and reconnect it while lyrics are loaded it doesn't start the loop again
 
 Visual feedback when checking for controller
 
-Stop input check loop if controller is disconnected
+DONE - Stop input check loop if controller is disconnected
 
 Auto-size the search window (seems like I need to check the DOM for this, CSS alone is proving tricky)
 
@@ -60,7 +60,7 @@ class App extends React.Component {
     // Handle initial search for songs/lyrics
     this.setState({
       searchStatusMessage: 'Searching...'
-    });
+    }); 
 
     let newSongSearchResults = [];
     let updatedSearchStatusMessage = '';
