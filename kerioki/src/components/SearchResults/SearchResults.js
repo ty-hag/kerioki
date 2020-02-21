@@ -11,8 +11,11 @@ class SearchResults extends React.Component {
       return <SearchResultSong songInfo={result} onVideoSearch={this.props.onVideoSearch} key={result.id} handleSongAdd={this.props.handleSongAdd} />
     });
 
+    const cancelButton = this.props.results.length > 0 ? <span className="button" onClick={this.props.onCancelSearch}>Clear Search Results</span> : '';
+
     return (
       <div>
+        <div>{cancelButton}</div>
         <div id="search-results">{resultsToDisplay}</div>
       </div>
     )

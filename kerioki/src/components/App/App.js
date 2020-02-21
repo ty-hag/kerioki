@@ -2,56 +2,24 @@
 
 TODO
 
-BUG: Lyrics index does not reset when next queued song is loaded
+Styling on search panel scrollbar
 
-This is all fixed by resetting the search results on queue add, but I don't fully understand how it was broken :(
-  BUG: video search results disappear when clicked
-  ("fixed" this by clearing search results when video is added to queue, but would still like to know why it did this)
-    - It is being re-rendered with the default state setting on SearchResultSong
-    - How do I prevent this from rendering on click? Why does this happen in the first place?
-      T - I'm guessing it's because SearchResults are getting re-rendered. Why is that? Its state is not changing.
-      C - Check to make sure handleSongAdd doesn't somehow change state passed to SearchResultSong
-    ? - What is actually happening? Why don't lyrics get erased too?
-      A - Lyrics come from App.js' state (specifically objects in searchResults). The lyrics are getting re-rendered with the same values since those values come from props (they are never instantiated as empties like the video results).
-      A - When a song is queued, searchResults's render is called twice. The first time the current props and nextProps match, so it doesn't render. For some reason, it is called again, and when that happens the nextProps are "undefined". As a result the props don't match and everything gets rendered.
-      ? - Does something in App.js call setState again after the queueing function?
-        A - Doesn't look that way
-      ? - What triggers the second render and why are the props undefined?
-        - Look into chrome debugger
-        - (Wrote this and decided I need to double-check)Not sure that it's a second render, but that the child components are just rendering even if the parents are not. It is rendering the video search results again  with an empty string?
-        - Going to let this slide for now since it's not broken, it's just not my preferred functionality
-  BUG: If you queue a video, then queue a different video from the same song search it appears to add the video to currentSong and queue the same one
-  (this is also "fixed" by clearing the search results, still don't know why it did it)
-  - currentSong is being updated with video, it should recognize that there is a video in the queue already?
+DONE - Button to close search results
 
-Replaced with static buttons
-  BUG: Fix hover buttons for queueing songs
-  G - Remove hover modal
-  G - Add buttons
-  G - Switch event listeners to buttons
-  - Actually fix the hover modal cuz it's cooler
+IN PROGRESS - Start controller input check loop when controller is added
+ - Works on initial add, but if you disconnect controller and reconnect it while lyrics are loaded it doesn't start the loop
+
+Visual feedback when checking for controller
+
+Stop input check loop if controller is disconnected
+
+Auto-size the search window (seems like I need to check the DOM for this, CSS alone is proving tricky)
 
 Handling a lack of search results
 G - No results from song search displays message
 - No results for video search displays message
 
-FEATURES:
-Lyrics scrolling (cycle through lines with up/down arrows, current line displays big, previous line and next 3 lines display small)
-  G - Lyrics must be processed into an array of strings, each string being a new line
-    G - Console.log the chopped lyrics to confirm it's working
-  G - Highlighted line determined by an index, which is a state on currentSongLyrics?
-    G - create index state on currentSongLyrics
-    G - Have lyrics display based on state (slice array and map over new array for display)
-  - Index resets to 0 when a new song loads
-  G Prevent scrolling into negative index
-
-Controller as remote scroller
-  - Check for valid controller
-
 Ability to copy+paste lyrics
-
-Ability to copy+paste youtube link
-UI error message on invalid youtube link input
 
 
 */
@@ -117,6 +85,12 @@ class App extends React.Component {
     });
   }
 
+  handleCancelSearch = () => {
+    this.setState({
+      songResults: []
+    })
+  }
+
   handleSongAdd = (songToAdd, toFrontOfQueue) => {
     // handle case where there is no current song
     if (Object.entries(this.state.currentSong).length === 0 && this.state.currentSong.constructor === Object) {
@@ -142,6 +116,12 @@ class App extends React.Component {
         });
       }
     }
+  }
+
+  handleControllerDisconnect = () => {
+    this.setState({
+      controllerConnectedIndex: -1
+    })
   }
 
   finishCurrentSong = () => {
@@ -182,10 +162,10 @@ class App extends React.Component {
     } else {
       if (navigator.getGamepads()[0].id === "Xbox 360 Controller (XInput STANDARD GAMEPAD)") {
         console.log('xbox controller at index 0');
-        this.setState({controllerConnectedIndex: 0})
-      } else if (navigator.getGamepads()[1].id === "Xbox 360 Controller (XInput STANDARD GAMEPAD)"){
+        this.setState({ controllerConnectedIndex: 0 })
+      } else if (navigator.getGamepads()[1].id === "Xbox 360 Controller (XInput STANDARD GAMEPAD)") {
         console.log('xbox controller at index 1');
-        this.setState({controllerConnectedIndex: 1})
+        this.setState({ controllerConnectedIndex: 1 })
       }
     }
   }
@@ -207,11 +187,17 @@ class App extends React.Component {
               results={this.state.songResults}
               onVideoSearch={this.onVideoSearch}
               handleSongAdd={this.handleSongAdd}
+              onCancelSearch={this.handleCancelSearch}
             />
           </div>
           <div>
             <SongQueue queuedSongs={this.state.songQueue} />
-            <CurrentSong currentSong={this.state.currentSong} finishCurrentSong={this.finishCurrentSong} controllerConnectedIndex={this.state.controllerConnectedIndex} />
+            <CurrentSong
+              currentSong={this.state.currentSong}
+              finishCurrentSong={this.finishCurrentSong}
+              controllerConnectedIndex={this.state.controllerConnectedIndex}
+              handleControllerDisconnect={this.handleControllerDisconnect}
+              />
           </div>
         </div>
       </div >
