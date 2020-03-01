@@ -23,12 +23,11 @@ const getSongs = async (searchTerm, resultLimiter) => {
         // scraped results is not an array, it's an object where each key is a number (cOoL!)
         // need to convert it to an array
         const scrapedResultsArray = Object.values(scrapedResultsRaw);
-        //console.log(scrapedResultsArray);
 
         const results = [];
 
         // setting a limit for results here, some results take too long to load
-        // Also, in testing results there are always 3 additional table rows, so I subtracted 3 from length
+        // Also, in testing results there are always 3 additional useless table rows, so I subtracted 3 from length
         let limitResultsTo = scrapedResultsArray.length - 3 > resultLimiter ? resultLimiter : scrapedResultsArray.length - 3;
 
         

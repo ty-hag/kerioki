@@ -2,16 +2,10 @@
 
 TODO
 
+Don't load lyrics on initial search (takes too long)
+ - Remove lyrics from song search results
+
 WIP - Styling on search panel scrollbar
-
-DONE - Button to close search results
-
-DONE - Start controller input check loop when controller is added
- DONE - Works on initial add, but if you disconnect controller and reconnect it while lyrics are loaded it doesn't start the loop again
-
-Visual feedback when checking for controller
-
-DONE - Stop input check loop if controller is disconnected
 
 Auto-size the search window (seems like I need to check the DOM for this, CSS alone is proving tricky)
 
@@ -32,7 +26,6 @@ import SearchResults from '../SearchResults/SearchResults';
 import CurrentSong from '../CurrentSong/CurrentSong';
 import SongQueue from '../SongQueue/SongQueue';
 import utaNetSearchSongs from '../../utils/utaNetSearchSongs';
-import { thisExpression } from '@babel/types';
 
 require('dotenv').config();
 
@@ -42,7 +35,8 @@ class App extends React.Component {
     searchStatusMessage: '',
     songQueue: [],
     currentSong: {},
-    controllerConnectedIndex: -1
+    controllerConnectedIndex: -1,
+    controllerCheckButtonMessage: 'Check Controller Status'
   }
 
   componentDidMount = () => {
@@ -60,7 +54,7 @@ class App extends React.Component {
     // Handle initial search for songs/lyrics
     this.setState({
       searchStatusMessage: 'Searching...'
-    }); 
+    });
 
     let newSongSearchResults = [];
     let updatedSearchStatusMessage = '';
@@ -157,27 +151,52 @@ class App extends React.Component {
     // Can't check for null as something that is null returns "object" on typeof
     // Does !theObjectToCheck work in its place? Looking at:
     // https://stackoverflow.com/questions/6003884/how-do-i-check-for-null-values-in-javascript
-    if (!navigator.getGamepads()[0]) {
-      console.log('gamepad null i guess');
-    } else {
-      if (navigator.getGamepads()[0].id === "Xbox 360 Controller (XInput STANDARD GAMEPAD)") {
-        console.log('xbox controller at index 0');
-        this.setState({ controllerConnectedIndex: 0 })
-      } else if (navigator.getGamepads()[1].id === "Xbox 360 Controller (XInput STANDARD GAMEPAD)") {
-        console.log('xbox controller at index 1');
-        this.setState({ controllerConnectedIndex: 1 })
+    this.setState({
+      controllerCheckButtonMessage: 'Checking...'
+    })
+    setTimeout(() => {
+      if (!navigator.getGamepads()[0] && !navigator.getGamepads()[1]) {
+        console.log('gamepad null i guess');
+        this.setState({
+          controllerCheckButtonMessage: 'Check Controller Status'
+        })
+      } else {
+        if (navigator.getGamepads()[0].id === "Xbox 360 Controller (XInput STANDARD GAMEPAD)") {
+          console.log('xbox controller at index 0');
+          this.setState({
+            controllerConnectedIndex: 0,
+            controllerCheckButtonMessage: 'Check Controller Status'
+          })
+        } else if (navigator.getGamepads()[1].id === "Xbox 360 Controller (XInput STANDARD GAMEPAD)") {
+          console.log('xbox controller at index 1');
+          this.setState({
+            controllerConnectedIndex: 1,
+            controllerCheckButtonMessage: 'Check Controller Status'
+          })
+        }
       }
-    }
+    }, 1000)
+
   }
 
   render() {
+    console.log('app render call');
+
+    // Conditional render for contoller connected status
+    let controllerStatus;
+    if (this.state.controllerConnectedIndex === 0 || this.state.controllerConnectedIndex === 1) {
+      controllerStatus = <span className='controller-found'>Connected</span>;
+    } else {
+      controllerStatus = <span className='controller-missing'>No Controller</span>;
+    }
+
     return (
       <div className="App">
         <div className="title-bar">
           <div className="big-text">Kerioki</div>
           <div>
-            <span className="button" onClick={this.checkForController}>Check for controller</span>
-            <span className={this.state.controllerConnectedIndex === 0 || this.state.controllerConnectedIndex === 1 ? 'controller-found' : 'controller-missing'}>Status</span>
+            <span className="button" id="controller-check-button" onClick={this.checkForController}>{this.state.controllerCheckButtonMessage}</span>
+            {controllerStatus}
           </div>
         </div>
         <SearchBar onSubmit={this.onSearchSubmit} searchStatusMessage={this.state.searchStatusMessage} />
@@ -197,7 +216,7 @@ class App extends React.Component {
               finishCurrentSong={this.finishCurrentSong}
               controllerConnectedIndex={this.state.controllerConnectedIndex}
               handleControllerDisconnect={this.handleControllerDisconnect}
-              />
+            />
           </div>
         </div>
       </div >
